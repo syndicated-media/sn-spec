@@ -1,0 +1,96 @@
+Namespace name: https://schema.syndicated.media/override/1.0
+Recommended prefix: overrides
+Status: Pre release
+
+Introduction
+
+The Overrides namespaace is an extension to RSS 2.0 and Atom 1.0 feeds 
+that allows a a newer item/entry to replace or override an older one.
+
+Replacing an item can be useful in a couple of situations, you could 
+release a corrupt enclosure and want to force clients to re download the 
+file. Or you could also want to rerun a previous episode.
+
+overrides:replaces
+
+The replaces element is a optional child of item or entry. It's value is 
+either a previous guid (in RSS) or id (in Atom), the item referenced has 
+likely been removed from the feed but may be cached by the client.
+
+The client should then purge the old item in favour of this one.
+
+An item or entry must not contain more than one replaces element.
+
+overrides:rerun
+
+The rerun element is a optional child of item or entry. It value is 
+either a previous guid (in RSS) or id (in Atom), the item referenced may 
+or may not still be in the feed and may or may not be cached by the 
+client.
+
+This allows the client to treat reruns differently to ordinary items, and 
+also link any status information between the two items. 
+
+An item or entry must not contain more than one rerun element. In the 
+case of a item being rerun multiple times the value should be the guid 
+of the oldest occurrence.
+
+The RSS or Atom source element should also be used in reruns.
+
+Example
+
+In this example there was in issue with Episode 3 release, the original 
+item has been removed and the new one replaces it. Episode 1 also gets 
+rerun twice.
+
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:overrides="https://schema.syndicated.media/override/1.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>Override example</title>
+  <link>https://example.org</link>
+  <atom:link rel="self" type="application/rss+xml" href="https://example.org/feed.xml"/>
+  <description>An example of the Overrides namespace in a RSS 2.0 feed.</description>
+  <item>
+    <title>Episode 1 rerun</title>
+    <link>https://example.org/1</link>
+    <description>This is also a rerun of Item 1</description>
+    <guid isPermaLink="false">tag:example.org,2017-01-26:/7</guid>
+    <overrides:rerun>tag:example.org,2017-01-26:/1</overrides:rerun>
+    <source url="https://example.org/feed.xml">Episode 1</source>
+  </item>
+  <item>
+    <title>Episode 1 rerun</title>
+    <link>https://example.org/1</link>
+    <description>This is a rerun of Item 1</description>
+    <guid isPermaLink="false">tag:example.org,2017-01-26:/6</guid>
+    <overrides:rerun>tag:example.org,2017-01-26:/1</overrides:rerun>
+    <source url="https://example.org/feed.xml">Episode 1</source>
+  </item>
+  <item>
+    <title>Episode 4</title>
+    <link>https://example.org/4</link>
+    <description>This is Item 4</description>
+    <guid isPermaLink="false">tag:example.org,2017-01-26:/5</guid>
+  </item>
+  <item>
+    <title>Episode 3</title>
+    <link>https://example.org/3</link>
+    <description>This is Item 3. Sorry if you in counted an issue with this episode, it's now fixed.</description>
+    <guid isPermaLink="false">tag:example.org,2017-01-26:/4</guid>
+    <overrides:replaces>tag:example.org,2017-01-26:/3</overrides:replaces>
+  </item>
+  <item>
+    <title>Episode 2</title>
+    <link>https://example.org/2</link>
+    <description>This is Item 2</description>
+    <guid isPermaLink="false">tag:example.org,2017-01-26:/2</guid>
+  </item>
+  <item>
+    <title>Episode 1</title>
+    <link>https://example.org/1</link>
+    <description>This is Item 1</description>
+    <guid isPermaLink="false">tag:example.org,2017-01-26:/1</guid>
+  </item>
+</channel>
+</rss>
+
